@@ -16,4 +16,4 @@ def execute_query(query, user, password, host, database):
     result = cur.fetchall()
     cur.close()
     conn.close()
-    return result
+    return result 
