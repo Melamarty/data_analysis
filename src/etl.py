@@ -1,5 +1,5 @@
 import pandas as pd
-import sqlite3
+from sqlalchemy import create_engine
 
 def extract_data(csv_file):
     return pd.read_csv(csv_file)
@@ -19,12 +19,22 @@ def transform_data(df):
     
     return df
 
-def load_data(df, db_file):
-    conn = sqlite3.connect(db_file)
-    df.to_sql('netflix_titles', conn, if_exists='replace', index=False)
-    conn.close()
+def get_mysql_engine(user, password, host, database):
+    engine = create_engine(f'mysql+mysqlconnector://{user}:{password}@{host}/{database}')
+    return engine
+
+def load_data(df, user, password, host, database):
+    engine = get_mysql_engine(user, password, host, database)
+    df.to_sql('netflix_titles', con=engine, if_exists='replace', index=False)
 
 if __name__ == "__main__":
+    # Example connection parameters
+    user = 'root'
+    password = 'simo'
+    host = '127.0.0.1'
+    database = 'simodb'
+
     df = extract_data('data.csv')
     df = transform_data(df)
-    load_data(df, 'db_netflix.sqlite')
+    load_data(df, user, password, host, database)
+

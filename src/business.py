@@ -2,11 +2,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from dal import execute_query
 
-DB_FILE = 'db_netflix.sqlite'
+# MySQL connection parameters
+USER = 'root'
+PASSWORD = 'simo'
+HOST = '127.0.0.1'
+DATABASE = 'simodb'
 
 def plot_movies_by_country():
     query = "SELECT country, COUNT(*) as count FROM netflix_titles WHERE type='Movie' GROUP BY country"
-    result = execute_query(query, DB_FILE)
+    result = execute_query(query, USER, PASSWORD, HOST, DATABASE)
     df = pd.DataFrame(result, columns=['Country', 'Count'])
     df.plot(kind='bar', x='Country', y='Count')
     plt.title('Number of Movies by Country')
@@ -16,9 +20,10 @@ def plot_shows_and_movies_by_year_range():
     query = """SELECT year_range, type, COUNT(*) as count FROM netflix_titles
                WHERE year_range IS NOT NULL
                GROUP BY year_range, type"""
-    result = execute_query(query, DB_FILE)
+    result = execute_query(query, USER, PASSWORD, HOST, DATABASE)
     df = pd.DataFrame(result, columns=['Year Range', 'Type', 'Count'])
     pivot_df = df.pivot(index='Year Range', columns='Type', values='Count')
+    pivot_df.plot(kind='bar')
     plt.title('TV Shows and Movies by Year Range')
     plt.savefig('output/shows_movies_by_year_range.png')
 
@@ -29,11 +34,11 @@ def plot_movies_by_duration():
                ELSE '> 120 min' END as duration, COUNT(*) as count
                FROM netflix_titles WHERE type='Movie'
                GROUP BY duration"""
-    result = execute_query(query, DB_FILE)
+    result = execute_query(query, USER, PASSWORD, HOST, DATABASE)
     df = pd.DataFrame(result, columns=['Duration', 'Count'])
     df.plot(kind='pie', y='Count', labels=df['Duration'], autopct='%1.1f%%')
     plt.title('Movies by Duration')
-    plt.ylabel('') 
+    plt.ylabel('')
     plt.savefig('output/movies_by_duration.png')
 
 def plot_shows_by_season():
@@ -43,11 +48,11 @@ def plot_shows_by_season():
                ELSE '> 3 seasons' END as seasons, COUNT(*) as count
                FROM netflix_titles WHERE type='TV Show'
                GROUP BY seasons"""
-    result = execute_query(query, DB_FILE)
+    result = execute_query(query, USER, PASSWORD, HOST, DATABASE)
     df = pd.DataFrame(result, columns=['Seasons', 'Count'])
     df.plot(kind='pie', y='Count', labels=df['Seasons'], autopct='%1.1f%%')
     plt.title('TV Shows by Season')
-    plt.ylabel('') 
+    plt.ylabel('')
     plt.savefig('output/shows_by_season.png')
 
 if __name__ == "__main__":
