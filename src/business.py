@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from dal import execute_query
 
-# MySQL connection parameters
 USER = 'root'
 PASSWORD = 'simo'
 HOST = '127.0.0.1'
@@ -49,6 +48,7 @@ def plot_shows_by_season():
                FROM netflix_titles WHERE type='TV Show'
                GROUP BY seasons"""
     result = execute_query(query, USER, PASSWORD, HOST, DATABASE)
+    print (result)
     df = pd.DataFrame(result, columns=['Seasons', 'Count'])
     df.plot(kind='pie', y='Count', labels=df['Seasons'], autopct='%1.1f%%')
     plt.title('TV Shows by Season')

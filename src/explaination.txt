@@ -1,7 +1,0 @@
-# explanation of cell 
-#0: cell width (0 means it will extend across the entire width of the page).
-# 10: cell height.
-# netflix Data Analysis Report': Text to display in the cell.
-# 0: no border.
-# 1: moves the cursor to the next line after drawing the cell.
-# 'C': centers the text.
